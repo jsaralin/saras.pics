@@ -3,245 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Photo Gallery</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Photo Gallery</title>
     <style>
-        /* Reset and Base Styles */
+        /* Reset and fill the entire screen */
         * {
+            box-sizing: border-box;
+        }
+        body {
             margin: 0;
             padding: 0;
-            box-box-sizing: border-box;
+            background-color: #000;
+            overflow-x: hidden;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fafafa;
-            color: #262626;
-            padding-bottom: 40px;
-        }
-
-        /* Header / Profile Section */
-        header {
-            max-width: 935px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            border-bottom: 1px solid #dbdbdb;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 28px;
-            font-weight: 300;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: #8e8e8e;
-            font-size: 14px;
-        }
-
-        /* Gallery Grid */
-        .gallery-container {
-            max-width: 935px;
-            margin: 20px auto 0;
-            padding: 0 20px;
-        }
-
+        /* Full-screen grid layout with no gaps */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 28px; /* Classic Instagram desktop spacing */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-gap: 0; 
+            width: 100vw;
         }
 
-        /* Gallery Item */
-        .gallery-item {
+        /* Square photo containers */
+        .photo-item {
             position: relative;
-            aspect-ratio: 1 / 1; /* Forces square layout */
-            background-color: #efefef;
-            cursor: pointer;
+            aspect-ratio: 1 / 1;
             overflow: hidden;
+            cursor: pointer;
+            background-color: #111;
         }
 
-        .gallery-item img {
+        .photo-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Crops image perfectly into the square */
-            transition: transform 0.2s ease;
+            object-fit: cover;
+            transition: opacity 0.2s ease-in-out;
         }
 
-        /* Hover Overlay */
-        .item-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.2s ease;
+        /* Hover Effect: 50% Opacity */
+        .photo-item:hover img {
+            opacity: 0.5;
         }
 
-        .gallery-item:hover .item-overlay {
-            opacity: 1;
-        }
-
-        .item-overlay span {
-            margin: 0 15px;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        /* Lightbox / Modal Pop-up */
-        .lightbox {
+        /* Zoom Overlay (Lightbox) */
+        .lightbox-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease-in-out;
         }
 
-        .lightbox.active {
+        /* Active overlay class */
+        .lightbox-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
 
-        .lightbox-content {
-            max-width: 85%;
-            max-height: 85vh;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        /* Zoomed image styling */
+        .lightbox-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
         }
 
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            color: #fff;
-            font-size: 35px;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
+        .lightbox-overlay.active img {
+            transform: scale(1);
         }
 
-        /* Mobile Responsive Design */
-        @media (max-width: 735px) {
+        /* Mobile adjustments for slightly smaller grid boxes */
+        @media (max-width: 600px) {
             .gallery-grid {
-                gap: 3px; /* Tight grid like mobile Instagram */
-            }
-            header {
-                padding: 20px 10px;
-            }
-            .item-overlay {
-                display: none; /* Hide hover details on touch screens */
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>My Gallery</h1>
-        <p>A visual collection of moments and captures</p>
-    </header>
+    <!-- Full screen gallery container -->
+    <div class="gallery-grid" id="galleryGrid"></div>
 
-    <div class="gallery-container">
-        <div class="gallery-grid">
-            
-            <div class="gallery-item" onclick="openLightbox(this)">
-                <img src="https://via.placeholder.com/600" alt="Photo 1">
-                <div class="item-overlay">
-                    <span><i class="fas fa-heart"></i> 142</span>
-                    <span><i class="fas fa-comment"></i> 12</span>
-                </div>
-            </div>
-
-            <div class="gallery-item" onclick="openLightbox(this)">
-                <img src="https://via.placeholder.com/600" alt="Photo 2">
-                <div class="item-overlay">
-                    <span><i class="fas fa-heart"></i> 89</span>
-                    <span><i class="fas fa-comment"></i> 5</span>
-                </div>
-            </div>
-
-            <div class="gallery-item" onclick="openLightbox(this)">
-                <img src="https://via.placeholder.com/600" alt="Photo 3">
-                <div class="item-overlay">
-                    <span><i class="fas fa-heart"></i> 230</span>
-                    <span><i class="fas fa-comment"></i> 45</span>
-                </div>
-            </div>
-
-            <div class="gallery-item" onclick="openLightbox(this)">
-                <img src="https://via.placeholder.com/600" alt="Photo 4">
-                <div class="item-overlay">
-                    <span><i class="fas fa-heart"></i> 64</span>
-                    <span><i class="fas fa-comment"></i> 3</span>
-                </div>
-            </div>
-
-            <div class="gallery-item" onclick="openLightbox(this)">
-                <img src="https://via.placeholder.com/600" alt="Photo 5">
-                <div class="item-overlay">
-                    <span><i class="fas fa-heart"></i> 175</span>
-                    <span><i class="fas fa-comment"></i> 18</span>
-                </div>
-            </div>
-
-            <div class="gallery-item" onclick="openLightbox(this)">
-                <img src="https://via.placeholder.com/600" alt="Photo 6">
-                <div class="item-overlay">
-                    <span><i class="fas fa-heart"></i> 312</span>
-                    <span><i class="fas fa-comment"></i> 29</span>
-                </div>
-            </div>
-
-            </div>
-    </div>
-
-    <div id="lightboxModal" class="lightbox" onclick="closeLightbox()">
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged view">
+    <!-- Hidden zoom pop-up overlay -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeZoom()">
+        <img id="lightboxImg" src="" alt="Zoomed View">
     </div>
 
     <script>
-        const lightbox = document.getElementById('lightboxModal');
-        const lightboxImg = document.getElementById('lightboxImg');
+        // 1. Add your list of image file names here!
+        const photoSources = [
+            "image1.jpg",
+            "image2.jpg",
+            "image3.jpg",
+            "image4.jpg",
+            "image5.jpg",
+            "image6.jpg",
+            "image7.jpg",
+            "image8.jpg"
+        ];
 
-        function openLightbox(element) {
-            // Find the image source inside the clicked gallery item
-            const imgSrc = element.querySelector('img').src;
-            lightboxImg.src = imgSrc;
-            lightbox.classList.add('active');
-        }
-
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-            // Clear source after fade out to prevent flashing old image next time
-            setTimeout(() => { lightboxImg.src = ''; }, 300);
-        }
-
-        // Close lightbox if Escape key is pressed
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-                closeLightbox();
+        // 2. Randomizes the image array order
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
-        });
+            return array;
+        }
+
+        // 3. Builds and injects the grid items dynamically
+        function initGallery() {
+            const grid = document.getElementById("galleryGrid");
+            const shuffled = shuffleArray([...photoSources]);
+
+            shuffled.forEach(src => {
+                const item = document.createElement("div");
+                item.className = "photo-item";
+                // When clicked, run the zoom function
+                item.onclick = () => openZoom(src);
+
+                const img = document.createElement("img");
+                img.src = src;
+                img.alt = "Gallery Photo";
+
+                item.appendChild(img);
+                grid.appendChild(item);
+            });
+        }
+
+        // 4. Handle Zoom In / Zoom Out Functionality
+        function openZoom(imageSrc) {
+            const lightbox = document.getElementById("lightbox");
+            const lightboxImg = document.getElementById("lightboxImg");
+            
+            lightboxImg.src = imageSrc;
+            lightbox.classList.add("active");
+        }
+
+        function closeZoom() {
+            const lightbox = document.getElementById("lightbox");
+            lightbox.classList.remove("active");
+        }
+
+        // Run the gallery creation script automatically on load
+        window.onload = initGallery;
     </script>
 
 </body>
 </html>
+
