@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Photo Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            color: #262626;
+            padding-bottom: 40px;
+        }
+
+        /* Header / Profile Section */
+        header {
+            max-width: 935px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #8e8e8e;
+            font-size: 14px;
+        }
+
+        /* Gallery Grid */
+        .gallery-container {
+            max-width: 935px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px; /* Classic Instagram desktop spacing */
+        }
+
+        /* Gallery Item */
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1 / 1; /* Forces square layout */
+            background-color: #efefef;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Crops image perfectly into the square */
+            transition: transform 0.2s ease;
+        }
+
+        /* Hover Overlay */
+        .item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .gallery-item:hover .item-overlay {
+            opacity: 1;
+        }
+
+        .item-overlay span {
+            margin: 0 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        /* Lightbox / Modal Pop-up */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox-content {
+            max-width: 85%;
+            max-height: 85vh;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 735px) {
+            .gallery-grid {
+                gap: 3px; /* Tight grid like mobile Instagram */
+            }
+            header {
+                padding: 20px 10px;
+            }
+            .item-overlay {
+                display: none; /* Hide hover details on touch screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>My Gallery</h1>
+        <p>A visual collection of moments and captures</p>
+    </header>
+
+    <div class="gallery-container">
+        <div class="gallery-grid">
+            
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="https://via.placeholder.com/600" alt="Photo 1">
+                <div class="item-overlay">
+                    <span><i class="fas fa-heart"></i> 142</span>
+                    <span><i class="fas fa-comment"></i> 12</span>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="https://via.placeholder.com/600" alt="Photo 2">
+                <div class="item-overlay">
+                    <span><i class="fas fa-heart"></i> 89</span>
+                    <span><i class="fas fa-comment"></i> 5</span>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="https://via.placeholder.com/600" alt="Photo 3">
+                <div class="item-overlay">
+                    <span><i class="fas fa-heart"></i> 230</span>
+                    <span><i class="fas fa-comment"></i> 45</span>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="https://via.placeholder.com/600" alt="Photo 4">
+                <div class="item-overlay">
+                    <span><i class="fas fa-heart"></i> 64</span>
+                    <span><i class="fas fa-comment"></i> 3</span>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="https://via.placeholder.com/600" alt="Photo 5">
+                <div class="item-overlay">
+                    <span><i class="fas fa-heart"></i> 175</span>
+                    <span><i class="fas fa-comment"></i> 18</span>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="https://via.placeholder.com/600" alt="Photo 6">
+                <div class="item-overlay">
+                    <span><i class="fas fa-heart"></i> 312</span>
+                    <span><i class="fas fa-comment"></i> 29</span>
+                </div>
+            </div>
+
+            </div>
+    </div>
+
+    <div id="lightboxModal" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged view">
+    </div>
+
+    <script>
+        const lightbox = document.getElementById('lightboxModal');
+        const lightboxImg = document.getElementById('lightboxImg');
+
+        function openLightbox(element) {
+            // Find the image source inside the clicked gallery item
+            const imgSrc = element.querySelector('img').src;
+            lightboxImg.src = imgSrc;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            // Clear source after fade out to prevent flashing old image next time
+            setTimeout(() => { lightboxImg.src = ''; }, 300);
+        }
+
+        // Close lightbox if Escape key is pressed
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+</html>
