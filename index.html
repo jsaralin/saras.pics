@@ -100,65 +100,67 @@
         <img id="lightboxImg" src="" alt="Zoomed View">
     </div>
 
-    <script>
-        // 1. Add your list of image file names here!
-        const photoSources = [
-            "image1.jpg",
-            "image2.jpg",
-            "image3.jpg",
-            "image4.jpg",
-            "image5.jpg",
-            "image6.jpg",
-            "image7.jpg",
-            "image8.jpg"
-        ];
+<script>
+    // 1. Tell the code exactly how many photos you have uploaded
+    const totalPhotos = 50; 
 
-        // 2. Randomizes the image array order
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+    // 2. This function automatically generates the list of image names (1.jpg, 2.jpg, etc.)
+    function generatePhotoList(count) {
+        const list = [];
+        for (let i = 1; i <= count; i++) {
+            // Change ".jpg" if your files use a different format like ".png"
+            list.push(`${i}.jpg`); 
         }
+        return list;
+    }
 
-        // 3. Builds and injects the grid items dynamically
-        function initGallery() {
-            const grid = document.getElementById("galleryGrid");
-            const shuffled = shuffleArray([...photoSources]);
-
-            shuffled.forEach(src => {
-                const item = document.createElement("div");
-                item.className = "photo-item";
-                // When clicked, run the zoom function
-                item.onclick = () => openZoom(src);
-
-                const img = document.createElement("img");
-                img.src = src;
-                img.alt = "Gallery Photo";
-
-                item.appendChild(img);
-                grid.appendChild(item);
-            });
+    // 3. Randomizes the image order
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
+        return array;
+    }
 
-        // 4. Handle Zoom In / Zoom Out Functionality
-        function openZoom(imageSrc) {
-            const lightbox = document.getElementById("lightbox");
-            const lightboxImg = document.getElementById("lightboxImg");
-            
-            lightboxImg.src = imageSrc;
-            lightbox.classList.add("active");
-        }
+    // 4. Builds and injects the grid items dynamically
+    function initGallery() {
+        const grid = document.getElementById("galleryGrid");
+        const rawPhotoList = generatePhotoList(totalPhotos);
+        const shuffled = shuffleArray(rawPhotoList);
 
-        function closeZoom() {
-            const lightbox = document.getElementById("lightbox");
-            lightbox.classList.remove("active");
-        }
+        shuffled.forEach(src => {
+            const item = document.createElement("div");
+            item.className = "photo-item";
+            item.onclick = () => openZoom(src);
 
-        // Run the gallery creation script automatically on load
-        window.onload = initGallery;
-    </script>
+            const img = document.createElement("img");
+            img.src = src;
+            img.alt = "Gallery Photo";
+
+            item.appendChild(img);
+            grid.appendChild(item);
+        });
+    }
+
+    // Handle Zoom In / Zoom Out Functionality
+    function openZoom(imageSrc) {
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightboxImg");
+        
+        lightboxImg.src = imageSrc;
+        lightbox.classList.add("active");
+    }
+
+    function closeZoom() {
+        const lightbox = document.getElementById("lightbox");
+        lightbox.classList.remove("active");
+    }
+
+    // Run the script on load
+    window.onload = initGallery;
+</script>
+
 
 </body>
 </html>
